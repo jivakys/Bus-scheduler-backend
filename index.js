@@ -14,6 +14,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://bus-route-scheduler-app.vercel.app",
+      "http://127.0.0.1:5500"
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -26,6 +27,7 @@ const io = new Server(httpServer, {
     origin: [
       "http://localhost:3000",
       "https://bus-route-scheduler-app.vercel.app",
+      "http://127.0.0.1:5500"
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   },
