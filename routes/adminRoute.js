@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { adminAuth } = require("../middlewares/auth");
 const BusModel = require("../models/BusModel");
-const Route = require("../models/Route");
+const RouteModel = require("../models/RouteModel");
 const UserModel = require("../models/UserModel");
 const ScheduleModel = require("../models/ScheduleModel");
 
@@ -21,7 +21,7 @@ router.get("/dashboard", adminAuth, async (req, res) => {
     // Get total counts
     const [totalRoutes, totalBuses, totalUsers, activeBookings] =
       await Promise.all([
-        Route.countDocuments(),
+        RouteModel.countDocuments(),
         BusModel.countDocuments(),
         UserModel.countDocuments(),
         ScheduleModel.countDocuments({
@@ -37,7 +37,7 @@ router.get("/dashboard", adminAuth, async (req, res) => {
     });
 
     // Get recent routes with proper field selection
-    const recentRoutes = await Route.find()
+    const recentRoutes = await RouteModel.find()
       .select('routeNumber startPoint endPoint createdAt')
       .sort({ createdAt: -1 })
       .limit(5);

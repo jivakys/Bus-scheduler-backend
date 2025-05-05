@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const Bus = require('../models/Bus');
-const Route = require('../models/Route');
+const BusModel = require('../models/BusModel');
+const RouteModel = require('../models/RouteModel');
 
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/bus-scheduler', {
@@ -71,11 +71,11 @@ const routes = [
 async function seedData() {
     try {
         // Clear existing data
-        await Bus.deleteMany({});
-        await Route.deleteMany({});
+        await BusModel.deleteMany({});
+        await RouteModel.deleteMany({});
 
         // Insert buses
-        const insertedBuses = await Bus.insertMany(buses);
+        const insertedBuses = await BusModel.insertMany(buses);
         console.log('Buses inserted:', insertedBuses.length);
 
         // Add bus references to routes
@@ -85,7 +85,7 @@ async function seedData() {
         }));
 
         // Insert routes
-        const insertedRoutes = await Route.insertMany(routesWithBuses);
+        const insertedRoutes = await RouteModel.insertMany(routesWithBuses);
         console.log('Routes inserted:', insertedRoutes.length);
 
         console.log('Data seeding completed successfully');
