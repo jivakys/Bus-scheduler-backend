@@ -9,23 +9,34 @@ const path = require("path");
 const app = express();
 const httpServer = createServer(app);
 
+// CORS configuration
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
-      "https://bus-route-scheduler-app.vercel.app",
+      // "https://bus-route-scheduler-app.vercel.app",
       "http://127.0.0.1:5500",
+      "https://bus-route-scheduler-app.vercel.app",
     ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Accept",
+      "Origin",
+      "X-Requested-With",
+    ],
+    exposedHeaders: ["Content-Range", "X-Content-Range"],
     credentials: true,
+    maxAge: 86400,
   })
 );
+
+// Handle preflight requests
+app.options("*", cors());
 
 const io = new Server(httpServer, {
   cors: {
     origin: [
-      "http://localhost:3000",
       "https://bus-route-scheduler-app.vercel.app",
       "http://127.0.0.1:5500",
     ],
@@ -33,12 +44,14 @@ const io = new Server(httpServer, {
   },
 });
 
+// Basic security
 app.use(
   helmet({
     contentSecurityPolicy: false,
   })
 );
 
+// Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -64,15 +77,18 @@ app.use("/api/schedules", require("./routes/scheduleRoute"));
 app.use("/api/admin", require("./routes/adminRoute"));
 app.use("/api/users", require("./routes/userRoute"));
 
+// Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Something went wrong!" });
 });
 
+// Serve frontend
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../Frontend/index.html"));
 });
 
+// Start server
 const PORT = 3000;
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
