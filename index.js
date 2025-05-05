@@ -8,13 +8,13 @@ const path = require("path");
 
 const app = express();
 const httpServer = createServer(app);
- 
+
 app.use(
   cors({
     origin: [
       "http://localhost:3000",
       "https://bus-route-scheduler-app.vercel.app",
-      "http://127.0.0.1:5500"
+      "http://127.0.0.1:5500",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -27,12 +27,11 @@ const io = new Server(httpServer, {
     origin: [
       "http://localhost:3000",
       "https://bus-route-scheduler-app.vercel.app",
-      "http://127.0.0.1:5500"
+      "http://127.0.0.1:5500",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   },
 });
-
 
 app.use(
   helmet({
@@ -69,7 +68,6 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Something went wrong!" });
 });
-
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../Frontend/index.html"));
